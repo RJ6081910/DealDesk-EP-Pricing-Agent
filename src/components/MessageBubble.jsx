@@ -1,5 +1,6 @@
 import { Bot, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const markdownComponents = {
   h1: ({ children }) => <h3 className="text-sm font-semibold text-gray-800 mt-2 mb-1">{children}</h3>,
@@ -45,7 +46,7 @@ const MessageBubble = ({ message, isStreaming = false }) => {
 
     return (
       <div className="prose prose-xs max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:my-1.5 prose-headings:text-gray-800 prose-strong:text-gray-800">
-        <ReactMarkdown components={markdownComponents}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
           {message.content}
         </ReactMarkdown>
       </div>
