@@ -1,34 +1,36 @@
 import { useState } from 'react';
 import { LogIn } from 'lucide-react';
 
-const USERS = [
-  { email: 'dd-admin@linkedin.com', password: 'EP-Admin-123!' },
-  { email: 'cakira@linkedin.com', password: 'EP-Admin-123!' }
-];
-
 const LoginPage = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    setTimeout(() => {
-      const user = USERS.find(
-        u => u.email === email.toLowerCase().trim() && u.password === password
-      );
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-      if (user) {
-        onLogin(user.email);
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        onLogin(data.email);
       } else {
-        setError('Invalid email or password');
+        setError(data.error || 'Invalid email or password');
       }
+    } catch {
+      setError('Unable to connect. Please try again.');
+    } finally {
       setLoading(false);
-    }, 400);
+    }
   };
 
   return (

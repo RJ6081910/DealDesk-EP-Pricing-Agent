@@ -179,29 +179,12 @@ export const buildSystemPrompt = (settings) => {
 };
 
 export const sendMessage = async (messages, settings, onChunk, { signal } = {}) => {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-
-  if (!apiKey) {
-    throw new Error('API key not configured. Please add VITE_ANTHROPIC_API_KEY to your .env file.');
-  }
-
   const systemPrompt = buildSystemPrompt(settings);
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const response = await fetch('/api/chat', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-5-20250929',
-      max_tokens: 2000,
-      system: systemPrompt,
-      messages: messages,
-      stream: true
-    }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages, systemPrompt }),
     signal
   });
 
@@ -209,7 +192,7 @@ export const sendMessage = async (messages, settings, onChunk, { signal } = {}) 
     let message = `API error: ${response.status}`;
     try {
       const error = await response.json();
-      message = error.error?.message || message;
+      message = error.error || error.error?.message || message;
     } catch {}
     throw new Error(message);
   }
