@@ -44,11 +44,16 @@ When you have enough information, provide a deal summary using this JSON format 
       "productCategory": "salesNavigator"
     }
   ],
-  "term": 3
+  "term": 3,
+  "specialDiscounts": [
+    {"type": "competitiveDisplacement", "name": "Competitive Displacement", "rate": 0.05}
+  ]
 }
 \`\`\`
 
 Always include this JSON block when you have deal information to update. The system will parse it and update the deal summary panel.
+
+**specialDiscounts rules:** Only include the specialDiscounts array if a discount is explicitly defined in the POLICY GUIDELINES section. The "rate" must match the exact percentage from the policy (e.g., 5% → 0.05). The "name" should be a human-readable label. The "type" should be a camelCase identifier. Do NOT invent special discounts — they must come from the policy.
 
 ## IMPORTANT
 - Be conversational and natural

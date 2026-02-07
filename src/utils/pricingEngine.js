@@ -136,18 +136,21 @@ export const calculateDealPricing = (products, term, specialDiscounts = [], sett
   const termDiscountRate = getTermDiscount(term, settings?.termDiscounts);
   const termDiscount = afterVolumeAndBundle * termDiscountRate;
 
-  // Calculate special discounts
+  // Calculate special discounts (from AI deal updates — policy-defined or standard)
   let specialDiscountTotal = 0;
   const appliedSpecialDiscounts = [];
   specialDiscounts.forEach(sd => {
-    const discountInfo = DISCOUNT_MATRIX.specialDiscounts[sd.type];
-    if (discountInfo) {
+    if (sd.rate && sd.rate > 0) {
+      const knownInfo = DISCOUNT_MATRIX.specialDiscounts[sd.type];
+      const name = sd.name || knownInfo?.name || sd.type || 'Special Discount';
       const amount = (afterVolumeAndBundle - termDiscount) * sd.rate;
       specialDiscountTotal += amount;
       appliedSpecialDiscounts.push({
-        ...discountInfo,
+        name,
         rate: sd.rate,
-        amount
+        amount,
+        requiresApproval: knownInfo?.requiresApproval ?? true,
+        approver: knownInfo?.approver || 'Deal Desk',
       });
     }
   });
