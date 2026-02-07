@@ -2,6 +2,27 @@ import { Bot, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+// Ensure blank lines around tables so remark-gfm can parse them
+const fixTables = (text) => {
+  const lines = text.split('\n');
+  const result = [];
+  for (let i = 0; i < lines.length; i++) {
+    const isTableLine = lines[i].trimStart().startsWith('|');
+    const prevIsTableLine = i > 0 && lines[i - 1].trimStart().startsWith('|');
+    // Insert blank line before the start of a table block
+    if (isTableLine && !prevIsTableLine && i > 0 && lines[i - 1].trim() !== '') {
+      result.push('');
+    }
+    result.push(lines[i]);
+    // Insert blank line after the end of a table block
+    const nextIsTableLine = i < lines.length - 1 && lines[i + 1].trimStart().startsWith('|');
+    if (isTableLine && !nextIsTableLine && i < lines.length - 1 && lines[i + 1].trim() !== '') {
+      result.push('');
+    }
+  }
+  return result.join('\n');
+};
+
 const markdownComponents = {
   h1: ({ children }) => <h3 className="text-sm font-semibold text-gray-800 mt-2 mb-1">{children}</h3>,
   h2: ({ children }) => <h4 className="text-xs font-semibold text-gray-800 mt-2 mb-1">{children}</h4>,
@@ -47,7 +68,7 @@ const MessageBubble = ({ message, isStreaming = false }) => {
     return (
       <div className="prose prose-xs max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-headings:my-1.5 prose-headings:text-gray-800 prose-strong:text-gray-800">
         <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-          {message.content}
+          {fixTables(message.content)}
         </ReactMarkdown>
       </div>
     );
