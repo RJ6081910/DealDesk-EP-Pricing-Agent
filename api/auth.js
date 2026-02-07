@@ -3,26 +3,29 @@ export default function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, password } = req.body;
+  const { email, password } = req.body || {};
   if (!email || !password) {
     return res.status(400).json({ error: 'Email and password are required' });
   }
 
-  // Users stored as JSON in env var: [{"email":"...","password":"..."},...]
-  let users = [];
-  try {
-    users = JSON.parse(process.env.AUTH_USERS || '[]');
-  } catch {
-    console.error('Failed to parse AUTH_USERS env var');
-    return res.status(500).json({ error: 'Server configuration error' });
-  }
+  // Each user stored as "email:password" in separate env vars
+  const userEntries = [
+    process.env.AUTH_USER_1,
+    process.env.AUTH_USER_2
+  ].filter(Boolean);
 
-  const match = users.find(
-    u => u.email === email.toLowerCase().trim() && u.password === password
-  );
+  const normalizedEmail = email.toLowerCase().trim();
+
+  const match = userEntries.some(entry => {
+    const separatorIndex = entry.indexOf(':');
+    if (separatorIndex === -1) return false;
+    const userEmail = entry.slice(0, separatorIndex).toLowerCase().trim();
+    const userPassword = entry.slice(separatorIndex + 1);
+    return userEmail === normalizedEmail && userPassword === password;
+  });
 
   if (match) {
-    return res.status(200).json({ success: true, email: match.email });
+    return res.status(200).json({ success: true, email: normalizedEmail });
   }
 
   return res.status(401).json({ error: 'Invalid email or password' });
