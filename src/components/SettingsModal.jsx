@@ -89,7 +89,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-shrink-0 whitespace-nowrap flex items-center gap-1.5 px-2.5 sm:px-3 py-2.5 text-xs font-medium border-b-2 transition-colors ${
+              className={`flex-shrink-0 whitespace-nowrap flex items-center gap-1.5 px-2.5 sm:px-3 py-2.5 -mb-px text-xs font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
                   ? 'border-gray-900 text-gray-900'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
