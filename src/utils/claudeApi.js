@@ -244,7 +244,7 @@ export const sendMessage = async (messages, settings, onChunk, { signal } = {}) 
 };
 
 export const extractDealUpdate = (text) => {
-  const jsonMatch = text.match(/```json:deal_update\s*([\s\S]*?)\s*```/i);
+  const jsonMatch = text.match(/```json\s*:?\s*deal_update\s*([\s\S]*?)\s*```/i);
   if (jsonMatch) {
     try {
       return JSON.parse(jsonMatch[1]);
@@ -256,6 +256,9 @@ export const extractDealUpdate = (text) => {
 };
 
 export const cleanResponseText = (text) => {
-  // Remove the JSON block from displayed text
-  return text.replace(/```json:deal_update\s*[\s\S]*?\s*```/gi, '').trim();
+  // Remove completed JSON deal_update blocks
+  let cleaned = text.replace(/```json\s*:?\s*deal_update\s*[\s\S]*?\s*```/gi, '');
+  // Also remove in-progress blocks during streaming (no closing backticks yet)
+  cleaned = cleaned.replace(/```json\s*:?\s*deal_update\s*[\s\S]*$/gi, '');
+  return cleaned.trim();
 };
