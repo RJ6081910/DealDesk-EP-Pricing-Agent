@@ -181,7 +181,7 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto p-3 flex-1 min-h-0">
+      <main className="max-w-7xl mx-auto p-3 flex-1 min-h-0 overflow-hidden w-full">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 h-full">
           {/* Chat Window - 3 columns */}
           <div className={`lg:col-span-3 h-full min-h-0 ${activePanel !== 'chat' ? 'hidden lg:block' : ''}`}>
@@ -196,8 +196,8 @@ function App() {
           </div>
 
           {/* Deal Summary - 2 columns */}
-          <div className={`lg:col-span-2 flex flex-col h-full ${activePanel !== 'deal' ? 'hidden lg:flex' : ''}`}>
-            <div className="flex-1 overflow-hidden">
+          <div className={`lg:col-span-2 flex flex-col h-full min-h-0 ${activePanel !== 'deal' ? 'hidden lg:flex' : ''}`}>
+            <div className="flex-1 min-h-0 overflow-hidden">
               <DealSummary dealState={dealState} formatCurrency={formatCurrency} settings={settings} />
             </div>
             <div className="mt-3">
