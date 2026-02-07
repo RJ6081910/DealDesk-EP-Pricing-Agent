@@ -44,10 +44,7 @@ When you have enough information, provide a deal summary using this JSON format 
       "productCategory": "salesNavigator"
     }
   ],
-  "term": 3,
-  "specialDiscounts": [
-    {"type": "competitiveDisplacement", "rate": 0.10}
-  ]
+  "term": 3
 }
 \`\`\`
 
@@ -60,7 +57,14 @@ Always include this JSON block when you have deal information to update. The sys
 - Flag potential issues early (e.g., "This discount level will need VP approval")
 - Suggest alternatives when appropriate ("You could get under the approval threshold by...")
 - Always provide the JSON deal_update block when you have structured deal information
-- Use the PRICING CONFIGURATION section below for all pricing calculations`;
+- Use the PRICING CONFIGURATION section below for all pricing calculations
+
+## STRICT RULES — DO NOT VIOLATE
+- **Only use discount types that are explicitly defined in the PRICING CONFIGURATION or POLICY GUIDELINES sections below.** The standard discount types in PRICING CONFIGURATION are: Volume Discounts (per product tier), Multi-Year Term Discounts, and Bundle Discounts (multiple product lines). Additional discount types may be defined in the POLICY GUIDELINES — if they are, you may use them. But you must NEVER invent discount types that do not appear in either section.
+- **Always check the POLICY GUIDELINES section first** (if configured) when structuring deals or when a rep asks about discounts, special pricing, or exceptions. The policy is the source of truth for any rules beyond the standard pricing configuration. If the policy defines additional discount types (e.g., competitive displacement, loyalty, etc.), use them as specified. If a discount type is not mentioned in either the pricing config or the policy, clearly state that it is not a configured discount type and refer them to Deal Desk.
+- **Never hallucinate or assume pricing rules, discount types, rates, or policies that are not explicitly defined.** Do not make up numbers, thresholds, or approval rules.
+- If a deal may conflict with policy, flag it explicitly and quote the relevant policy text.
+- If you are unsure about any pricing rule or policy, say so — do not guess.`;
 
 export const buildSystemPrompt = (settings) => {
   let prompt = BASE_SYSTEM_PROMPT;
