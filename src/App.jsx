@@ -110,7 +110,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
@@ -181,10 +181,10 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto p-3 h-[calc(100vh-105px)] lg:h-[calc(100vh-64px)]">
+      <main className="max-w-7xl mx-auto p-3 flex-1 min-h-0">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 h-full">
           {/* Chat Window - 3 columns */}
-          <div className={`lg:col-span-3 h-full ${activePanel !== 'chat' ? 'hidden lg:block' : ''}`}>
+          <div className={`lg:col-span-3 h-full min-h-0 ${activePanel !== 'chat' ? 'hidden lg:block' : ''}`}>
             <ChatWindow
               messages={messages}
               onSend={handleSendMessage}
