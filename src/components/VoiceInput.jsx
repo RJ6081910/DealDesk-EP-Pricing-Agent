@@ -165,7 +165,7 @@ const VoiceInput = ({ onTranscript, disabled }) => {
       <button
         onClick={toggleRecording}
         disabled={disabled || !isSupported}
-        className={`p-2 rounded-full transition-all ${
+        className={`p-2.5 sm:p-2 rounded-full transition-all ${
           isRecording
             ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/50'
             : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'

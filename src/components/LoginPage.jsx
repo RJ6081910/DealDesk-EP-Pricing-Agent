@@ -55,7 +55,7 @@ const LoginPage = ({ onLogin }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@linkedin.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2] focus:border-transparent"
               />
             </div>
 
@@ -70,7 +70,7 @@ const LoginPage = ({ onLogin }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2] focus:border-transparent"
               />
             </div>
 
@@ -81,7 +81,7 @@ const LoginPage = ({ onLogin }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#0A66C2] text-white text-sm font-medium rounded-lg hover:bg-[#004182] transition-colors disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-2 bg-[#0A66C2] text-white text-sm font-medium rounded-lg hover:bg-[#004182] transition-colors disabled:opacity-60"
             >
               {loading ? (
                 <span>Signing in...</span>

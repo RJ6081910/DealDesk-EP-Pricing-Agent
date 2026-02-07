@@ -241,7 +241,7 @@ const SuggestedReplies = ({ onSelect, messageCount, hasDealData, messages = [], 
           <button
             key={index}
             onClick={() => onSelect(suggestion.text)}
-            className="px-2.5 py-1 text-xs bg-white border border-gray-200 rounded-md text-gray-700 hover:bg-gray-50 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-colors"
+            className="px-3 sm:px-2.5 py-2 sm:py-1 text-xs bg-white border border-gray-200 rounded-md text-gray-700 hover:bg-gray-50 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-colors"
           >
             {suggestion.label}
           </button>

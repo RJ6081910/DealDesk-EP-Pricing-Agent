@@ -111,7 +111,7 @@ Account Executive, LinkedIn
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 modal-backdrop">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col modal-content">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-[#0A66C2] rounded-lg flex items-center justify-center">
               <Mail className="w-5 h-5 text-white" />
@@ -130,7 +130,7 @@ Account Executive, LinkedIn
         </div>
 
         {/* Recipient Email Input */}
-        <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+        <div className="px-4 sm:px-6 py-3 bg-gray-50 border-b border-gray-200">
           <label className="block text-xs font-medium text-gray-600 mb-1">Recipient Email</label>
           <input
             type="email"
@@ -142,7 +142,7 @@ Account Executive, LinkedIn
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           <div className="bg-gray-50 rounded-lg p-4 font-mono text-sm whitespace-pre-wrap text-gray-700 leading-relaxed">
             {emailContent}
           </div>
@@ -156,21 +156,21 @@ Account Executive, LinkedIn
         )}
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <p className="text-xs text-gray-500">
             Edit the placeholders in brackets before sending
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <button
               onClick={handleOpenMailClient}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full sm:w-auto justify-center flex items-center gap-2 px-4 py-2.5 sm:py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
             >
               <Mail className="w-4 h-4" />
               <span className="text-sm font-medium">Open in Mail</span>
             </button>
             <button
               onClick={handleCopy}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`w-full sm:w-auto justify-center flex items-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg transition-colors ${
                 copied
                   ? 'bg-green-500 text-white'
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -191,7 +191,7 @@ Account Executive, LinkedIn
             <button
               onClick={handleSendEmail}
               disabled={!isValidEmail || sendState === 'sending'}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`w-full sm:w-auto justify-center flex items-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                 sendState === 'sent'
                   ? 'bg-green-500 text-white'
                   : 'bg-[#0A66C2] text-white hover:bg-[#004182]'

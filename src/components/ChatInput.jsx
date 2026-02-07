@@ -42,7 +42,7 @@ const ChatInput = ({ onSend, disabled, value, onChange }) => {
           placeholder="Describe your deal..."
           disabled={disabled}
           rows={1}
-          className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg text-xs resize-y focus:outline-none focus:ring-2 focus:ring-[#0A66C2] focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
+          className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg text-base sm:text-xs resize-y focus:outline-none focus:ring-2 focus:ring-[#0A66C2] focus:border-transparent disabled:bg-gray-50 disabled:cursor-not-allowed"
           style={{ minHeight: '36px', maxHeight: '100px' }}
         />
         <div className="absolute right-2 bottom-1.5">
@@ -52,7 +52,7 @@ const ChatInput = ({ onSend, disabled, value, onChange }) => {
       <button
         type="submit"
         disabled={!value.trim() || disabled}
-        className="p-2 bg-[#0A66C2] text-white rounded-lg hover:bg-[#004182] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+        className="p-3 sm:p-2 bg-[#0A66C2] text-white rounded-lg hover:bg-[#004182] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         <Send className="w-4 h-4" />
       </button>

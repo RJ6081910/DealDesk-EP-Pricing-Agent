@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { calculateDealPricing } from '../utils/pricingEngine';
 import { getRequiredApprovals } from '../utils/approvalMatrix';
 
@@ -22,7 +22,7 @@ export const useDealState = (settings) => {
         customer: update.customer ? { ...prev.customer, ...update.customer } : prev.customer,
         products: update.products || prev.products,
         term: update.term ?? prev.term,
-        specialDiscounts: update.specialDiscounts || prev.specialDiscounts
+        specialDiscounts: update.specialDiscounts ?? prev.specialDiscounts
       };
 
       // Recalculate pricing if we have products
@@ -49,6 +49,15 @@ export const useDealState = (settings) => {
       }
 
       return newState;
+    });
+  }, [settings]);
+
+  useEffect(() => {
+    setDealState(prev => {
+      if (prev.products.length === 0) return prev;
+      const pricing = calculateDealPricing(prev.products, prev.term, prev.specialDiscounts, settings);
+      const approvals = getRequiredApprovals(pricing.totalDiscountRate, pricing.finalTCV, [], settings);
+      return { ...prev, pricing, approvals };
     });
   }, [settings]);
 

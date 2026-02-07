@@ -10,7 +10,18 @@ const checkPageOverflow = (doc, yPos, margin = 30) => {
   return yPos;
 };
 
-export const generateQuotePDF = (dealState, settings) => {
+const fetchLogoAsDataUrl = async () => {
+  const response = await fetch('/linkedin-logo.png');
+  const blob = await response.blob();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
+
+export const generateQuotePDF = async (dealState, settings) => {
   const { customer, pricing, term } = dealState;
   const currencyCode = settings?.currency || 'USD';
   const currency = CURRENCIES[currencyCode] || CURRENCIES.USD;
@@ -51,15 +62,26 @@ export const generateQuotePDF = (dealState, settings) => {
   doc.setFillColor(10, 102, 194);
   doc.rect(0, 0, pageWidth, 35, 'F');
 
-  // Company name in header
+  // Add LinkedIn logo to top-left of header
+  let logoLoaded = false;
+  try {
+    const logoDataUrl = await fetchLogoAsDataUrl();
+    doc.addImage(logoDataUrl, 'PNG', 8, 4, 27, 27);
+    logoLoaded = true;
+  } catch (e) {
+    console.error('Failed to load LinkedIn logo for PDF:', e);
+  }
+
+  // Company name in header (shifted right if logo loaded)
+  const textX = logoLoaded ? 40 : 20;
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(24);
   doc.setFont('helvetica', 'bold');
-  doc.text('LinkedIn', 20, 22);
+  doc.text('LinkedIn', textX, 22);
 
   doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
-  doc.text('Enterprise Program Quote', 20, 30);
+  doc.text('Enterprise Program Quote', textX, 30);
 
   yPos = 50;
 

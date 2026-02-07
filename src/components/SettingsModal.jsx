@@ -64,7 +64,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 modal-backdrop">
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col modal-content">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200">
+        <div className="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-gray-200">
           <h2 className="text-sm font-semibold text-gray-900">Deal Settings & Policy</h2>
           <div className="flex items-center gap-2">
             <button
@@ -84,25 +84,25 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-200 px-5">
+        <div className="flex overflow-x-auto scrollbar-hide border-b border-gray-200 px-3 sm:px-5">
           {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium border-b-2 transition-colors ${
+              className={`flex-shrink-0 whitespace-nowrap flex items-center gap-1.5 px-2.5 sm:px-3 py-2.5 text-xs font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
                   ? 'border-gray-900 text-gray-900'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              <tab.icon className="w-3.5 h-3.5" />
+              <tab.icon className="w-3.5 h-3.5 hidden sm:block" />
               {tab.label}
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-5">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-5">
           {/* Products Tab */}
           {activeTab === 'products' && (
             <div className="space-y-4">
@@ -150,11 +150,12 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                           <span className="text-[10px] text-gray-400">$</span>
                           <input
                             type="number"
+                            min="0"
                             value={product.listPrice}
                             onChange={(e) => handleProductChange(category, tier, 'listPrice', Number(e.target.value))}
                             className="w-20 px-2 py-1 border border-gray-200 rounded text-xs text-gray-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#0A66C2]"
                           />
-                          <span className="text-[10px] text-gray-400">/seat/yr</span>
+                          <span className="text-[10px] text-gray-400"><span className="hidden sm:inline">/seat/yr</span><span className="sm:hidden">/s/yr</span></span>
                         </div>
                       </div>
                     ))}
@@ -187,7 +188,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                     {category.replace(/([A-Z])/g, ' $1').trim()}
                   </h4>
                   <div className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="grid grid-cols-[1fr_auto_1fr_80px] gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200">
+                    <div className="grid grid-cols-[1fr_auto_1fr_80px] gap-1 sm:gap-2 px-2 sm:px-3 py-2 bg-gray-50 border-b border-gray-200">
                       <span className="text-[10px] font-semibold text-gray-500 uppercase">Min Seats</span>
                       <span className="text-[10px] text-gray-300 w-3 text-center">&mdash;</span>
                       <span className="text-[10px] font-semibold text-gray-500 uppercase">Max Seats</span>
@@ -196,12 +197,13 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                     {tiers.map((tier, index) => (
                       <div
                         key={index}
-                        className={`grid grid-cols-[1fr_auto_1fr_80px] gap-2 px-3 py-2 items-center ${
+                        className={`grid grid-cols-[1fr_auto_1fr_80px] gap-1 sm:gap-2 px-2 sm:px-3 py-2 items-center ${
                           index < tiers.length - 1 ? 'border-b border-gray-100' : ''
                         }`}
                       >
                         <input
                           type="number"
+                          min="0"
                           value={tier.min}
                           onChange={(e) => handleVolumeDiscountChange(category, index, 'min', e.target.value)}
                           className="px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-[#0A66C2]"
@@ -209,6 +211,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                         <span className="text-gray-300 w-3 text-center text-xs">&ndash;</span>
                         <input
                           type="number"
+                          min="0"
                           value={tier.max}
                           onChange={(e) => handleVolumeDiscountChange(category, index, 'max', e.target.value)}
                           className="px-2 py-1 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-[#0A66C2]"
@@ -216,6 +219,8 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                         <div className="flex items-center justify-end gap-1">
                           <input
                             type="number"
+                            min="0"
+                            max="100"
                             value={tier.discount}
                             onChange={(e) => handleVolumeDiscountChange(category, index, 'discount', e.target.value)}
                             className="w-12 px-1.5 py-1 border border-gray-200 rounded text-xs text-right font-medium focus:outline-none focus:ring-1 focus:ring-[#0A66C2]"
@@ -253,6 +258,8 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                       <div className="flex items-center gap-1">
                         <input
                           type="number"
+                          min="0"
+                          max="100"
                           value={discount}
                           onChange={(e) => handleTermDiscountChange(years, e.target.value)}
                           className="w-14 px-2 py-1 border border-gray-200 rounded text-xs text-right font-medium focus:outline-none focus:ring-1 focus:ring-[#0A66C2]"
@@ -277,6 +284,8 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                       <div className="flex items-center gap-1">
                         <input
                           type="number"
+                          min="0"
+                          max="100"
                           value={discount}
                           onChange={(e) => handleBundleDiscountChange(count, e.target.value)}
                           className="w-14 px-2 py-1 border border-gray-200 rounded text-xs text-right font-medium focus:outline-none focus:ring-1 focus:ring-[#0A66C2]"
@@ -307,6 +316,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                   Who needs to approve deals based on total discount percentage.
                 </p>
 
+                <div className="overflow-x-auto"><div className="min-w-[400px]">
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
                   <div className="grid grid-cols-[72px_60px_1fr_1fr] gap-2 px-3 py-1.5 bg-gray-50 border-b border-gray-200">
                     <span className="text-[10px] font-semibold text-gray-500 uppercase">Level</span>
@@ -322,6 +332,8 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                       <div className="flex items-center gap-0.5">
                         <input
                           type="number"
+                          min="0"
+                          max="100"
                           value={threshold.maxDiscount}
                           onChange={(e) => handleApprovalChange('discount', index, 'maxDiscount', e.target.value)}
                           className="w-11 px-1.5 py-1 border border-gray-200 rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#0A66C2]"
@@ -343,6 +355,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                     </div>
                   ))}
                 </div>
+                </div></div>
               </div>
 
               {/* Deal Size (TCV) Approvals */}
@@ -352,6 +365,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                   Approval requirements based on Total Contract Value.
                 </p>
 
+                <div className="overflow-x-auto"><div className="min-w-[400px]">
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
                   <div className="grid grid-cols-[48px_1fr_1fr] gap-2 px-3 py-1.5 bg-gray-50 border-b border-gray-200">
                     <span className="text-[10px] font-semibold text-gray-500 uppercase">Tier</span>
@@ -365,6 +379,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                         <span className="text-[10px] text-gray-400">$</span>
                         <input
                           type="number"
+                          min="0"
                           value={threshold.maxTCV}
                           onChange={(e) => handleApprovalChange('tcv', index, 'maxTCV', e.target.value)}
                           className="w-24 px-2 py-1 border border-gray-200 rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#0A66C2]"
@@ -380,6 +395,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
                     </div>
                   ))}
                 </div>
+                </div></div>
               </div>
 
               <div className="flex items-start gap-2 p-2.5 bg-gray-50 border border-gray-200 rounded-lg">
@@ -420,7 +436,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-gray-200 bg-gray-50">
+        <div className="px-3 sm:px-5 py-3 border-t border-gray-200 bg-gray-50">
           <p className="text-[10px] text-gray-500">
             Changes are saved automatically and will be reflected in new conversations.
           </p>

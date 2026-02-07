@@ -9,10 +9,10 @@ const ProductLineItem = ({ product, formatCurrency }) => {
           </span>
         )}
       </div>
-      <div className="flex items-center gap-4 text-gray-600">
-        <span className="w-16 text-center">{product.quantity}</span>
-        <span className="w-20 text-right">{formatCurrency(product.unitPrice)}</span>
-        <span className="w-24 text-right font-medium text-gray-800">
+      <div className="flex items-center gap-2 sm:gap-4 text-gray-600">
+        <span className="w-10 sm:w-16 text-center">{product.quantity}</span>
+        <span className="w-16 sm:w-20 text-right hidden sm:inline">{formatCurrency(product.unitPrice)}</span>
+        <span className="w-16 sm:w-24 text-right font-medium text-gray-800">
           {formatCurrency(product.lineTotal)}
         </span>
       </div>

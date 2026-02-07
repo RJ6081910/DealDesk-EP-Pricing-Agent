@@ -32,9 +32,9 @@ const ApprovalBadge = ({ approval }) => {
           <span className={`w-1.5 h-1.5 rounded-full ${getDotColor()}`} />
           <span className="font-medium text-xs text-gray-800">{approval.approver}</span>
         </div>
-        <div className="text-[10px] text-gray-500 mt-0.5">{approval.reason}</div>
+        <div className="text-xs sm:text-[10px] text-gray-500 mt-0.5">{approval.reason}</div>
         {approval.sla && (
-          <div className="text-[10px] text-gray-400 mt-0.5">SLA: {approval.sla}</div>
+          <div className="text-xs sm:text-[10px] text-gray-400 mt-0.5">SLA: {approval.sla}</div>
         )}
       </div>
     </div>

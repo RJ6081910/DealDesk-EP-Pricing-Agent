@@ -5,17 +5,17 @@ const markdownComponents = {
   h1: ({ children }) => <h3 className="text-sm font-semibold text-gray-800 mt-2 mb-1">{children}</h3>,
   h2: ({ children }) => <h4 className="text-xs font-semibold text-gray-800 mt-2 mb-1">{children}</h4>,
   h3: ({ children }) => <h5 className="text-xs font-medium text-gray-800 mt-1.5 mb-0.5">{children}</h5>,
-  p: ({ children }) => <p className="text-xs leading-relaxed my-1">{children}</p>,
+  p: ({ children }) => <p className="text-sm sm:text-xs leading-relaxed my-1">{children}</p>,
   ul: ({ children }) => <ul className="list-disc pl-4 my-1 space-y-0.5">{children}</ul>,
   ol: ({ children }) => <ol className="list-decimal pl-4 my-1 space-y-0.5">{children}</ol>,
-  li: ({ children }) => <li className="text-xs pl-0.5">{children}</li>,
+  li: ({ children }) => <li className="text-sm sm:text-xs pl-0.5">{children}</li>,
   strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
   em: ({ children }) => <em className="italic">{children}</em>,
   code: ({ children, inline }) =>
     inline ? (
-      <code className="bg-gray-200 px-1 py-0.5 rounded text-[10px] font-mono">{children}</code>
+      <code className="bg-gray-200 px-1 py-0.5 rounded text-xs sm:text-[10px] font-mono">{children}</code>
     ) : (
-      <code className="block bg-gray-200 p-2 rounded text-[10px] font-mono my-1 overflow-x-auto">{children}</code>
+      <code className="block bg-gray-200 p-2 rounded text-xs sm:text-[10px] font-mono my-1 overflow-x-auto">{children}</code>
     ),
   table: ({ children }) => (
     <div className="overflow-x-auto my-1">
@@ -37,7 +37,7 @@ const MessageBubble = ({ message, isStreaming = false }) => {
   const renderContent = () => {
     if (!isAgent) {
       return (
-        <div className="whitespace-pre-wrap text-xs leading-relaxed">
+        <div className="whitespace-pre-wrap text-sm sm:text-xs leading-relaxed">
           {message.content}
         </div>
       );

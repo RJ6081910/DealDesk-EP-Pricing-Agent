@@ -83,10 +83,10 @@ const DealSummary = ({ dealState, formatCurrency, settings }) => {
             <div className="bg-gray-50 rounded-lg p-3">
               <div className="flex items-center justify-between text-xs text-gray-500 font-medium pb-2 border-b border-gray-200">
                 <span>Product</span>
-                <div className="flex items-center gap-4">
-                  <span className="w-16 text-center">Qty</span>
-                  <span className="w-20 text-right">Unit</span>
-                  <span className="w-24 text-right">Total</span>
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <span className="w-10 sm:w-16 text-center">Qty</span>
+                  <span className="w-16 sm:w-20 text-right hidden sm:block">Unit</span>
+                  <span className="w-16 sm:w-24 text-right">Total</span>
                 </div>
               </div>
               <div className="divide-y divide-gray-100">

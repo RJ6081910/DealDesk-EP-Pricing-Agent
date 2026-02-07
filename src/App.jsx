@@ -27,6 +27,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const { settings, updateSettings, resetSettings, formatCurrency } = useSettings();
   const { dealState, updateDeal, resetDeal } = useDealState(settings);
+  const [activePanel, setActivePanel] = useState('chat');
   const abortRef = useRef(null);
 
   const handleLogin = (email) => {
@@ -115,32 +116,32 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="/linkedin-logo.png" alt="LinkedIn" className="h-9 object-contain" />
-            <h1 className="text-sm font-semibold text-gray-900">LinkedIn EP Pricing Agent</h1>
+            <h1 className="text-sm font-semibold text-gray-900"><span className="hidden md:inline">LinkedIn EP Pricing Agent</span><span className="md:hidden">EP Agent</span></h1>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowSettings(true)}
-              className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2.5 md:py-1.5 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
               title="Deal Settings & Policy"
             >
               <Settings className="w-4 h-4" />
-              <span className="text-sm">Deal Settings & Policy</span>
+              <span className="hidden md:inline text-sm">Deal Settings & Policy</span>
             </button>
             <button
               onClick={handleReset}
-              className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2.5 md:py-1.5 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
               title="Start new deal"
             >
               <RotateCcw className="w-4 h-4" />
-              <span className="text-sm">New Deal</span>
+              <span className="hidden md:inline text-sm">New Deal</span>
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-3 py-2.5 md:py-1.5 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
               title="Sign out"
             >
               <LogOut className="w-4 h-4" />
-              <span className="text-sm">Sign out</span>
+              <span className="hidden md:inline text-sm">Sign out</span>
             </button>
           </div>
         </div>
@@ -155,11 +156,35 @@ function App() {
         </div>
       )}
 
+      {/* Mobile Panel Toggle */}
+      <div className="lg:hidden flex border-b border-gray-200 bg-white">
+        <button
+          onClick={() => setActivePanel('chat')}
+          className={`flex-1 py-2.5 text-sm font-medium text-center border-b-2 transition-colors ${
+            activePanel === 'chat'
+              ? 'border-[#0A66C2] text-[#0A66C2]'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Chat
+        </button>
+        <button
+          onClick={() => setActivePanel('deal')}
+          className={`flex-1 py-2.5 text-sm font-medium text-center border-b-2 transition-colors ${
+            activePanel === 'deal'
+              ? 'border-[#0A66C2] text-[#0A66C2]'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Deal Summary
+        </button>
+      </div>
+
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto p-3 h-[calc(100vh-64px)]">
+      <main className="max-w-7xl mx-auto p-3 h-[calc(100vh-105px)] lg:h-[calc(100vh-64px)]">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 h-full">
           {/* Chat Window - 3 columns */}
-          <div className="lg:col-span-3 h-full min-h-[500px]">
+          <div className={`lg:col-span-3 h-full ${activePanel !== 'chat' ? 'hidden lg:block' : ''}`}>
             <ChatWindow
               messages={messages}
               onSend={handleSendMessage}
@@ -171,7 +196,7 @@ function App() {
           </div>
 
           {/* Deal Summary - 2 columns */}
-          <div className="lg:col-span-2 flex flex-col h-full min-h-[500px]">
+          <div className={`lg:col-span-2 flex flex-col h-full ${activePanel !== 'deal' ? 'hidden lg:flex' : ''}`}>
             <div className="flex-1 overflow-hidden">
               <DealSummary dealState={dealState} formatCurrency={formatCurrency} settings={settings} />
             </div>
