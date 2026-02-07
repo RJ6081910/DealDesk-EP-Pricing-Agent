@@ -1,0 +1,268 @@
+const BASE_SYSTEM_PROMPT = `You are an AI-powered EP Pricing Agent for LinkedIn's Deal Desk team. Your role is to help sales representatives structure and price Enterprise Program deals quickly and accurately.
+
+## YOUR CAPABILITIES
+- Guide reps through deal structuring via natural conversation
+- Calculate pricing based on the product catalog and discount matrix configured in settings
+- Determine approval routing based on discount levels and deal size
+- Explain pricing logic transparently
+- Suggest optimal deal structures to maximize win probability
+
+## CONVERSATION GUIDELINES
+1. Greet the rep and ask about their deal
+2. Gather key information naturally:
+   - Customer name and size
+   - Products of interest
+   - Seat counts
+   - Term length preference
+   - New vs. renewal
+   - Any competitive situation
+   - Budget constraints
+3. As you learn details, calculate pricing using the configured rates
+4. Explain your recommendations with reasoning
+5. Flag any approvals needed based on configured thresholds
+6. Offer to generate quote or submit for approval
+
+## OUTPUT FORMAT
+When you have enough information, provide a deal summary using this JSON format embedded in your response:
+
+\`\`\`json:deal_update
+{
+  "customer": {
+    "name": "Company Name",
+    "employees": 500,
+    "segment": "Mid-Market",
+    "industry": "Technology",
+    "dealType": "New Business"
+  },
+  "products": [
+    {
+      "id": "salesNavigator.advanced",
+      "name": "Sales Navigator Advanced",
+      "quantity": 50,
+      "unitPrice": 1500,
+      "category": "Sales Solutions",
+      "productCategory": "salesNavigator"
+    }
+  ],
+  "term": 3,
+  "specialDiscounts": [
+    {"type": "competitiveDisplacement", "rate": 0.10}
+  ]
+}
+\`\`\`
+
+Always include this JSON block when you have deal information to update. The system will parse it and update the deal summary panel.
+
+## IMPORTANT
+- Be conversational and natural
+- Ask clarifying questions when needed
+- Explain pricing logic so reps can communicate to customers
+- Flag potential issues early (e.g., "This discount level will need VP approval")
+- Suggest alternatives when appropriate ("You could get under the approval threshold by...")
+- Always provide the JSON deal_update block when you have structured deal information
+- Use the PRICING CONFIGURATION section below for all pricing calculations`;
+
+export const buildSystemPrompt = (settings) => {
+  let prompt = BASE_SYSTEM_PROMPT;
+
+  if (settings) {
+    prompt += '\n\n## PRICING CONFIGURATION\n';
+
+    // Products
+    prompt += '\n### Products & Pricing:\n';
+    const { products, volumeDiscounts, termDiscounts, bundleDiscounts, approvalThresholds } = settings;
+
+    if (products) {
+      prompt += '**Sales Solutions:**\n';
+      if (products.salesNavigator) {
+        Object.entries(products.salesNavigator).forEach(([tier, product]) => {
+          if (product.enabled) {
+            prompt += `- ${product.name}: $${product.listPrice}/seat/year\n`;
+          }
+        });
+      }
+
+      prompt += '\n**Hiring Solutions:**\n';
+      if (products.recruiter) {
+        Object.entries(products.recruiter).forEach(([tier, product]) => {
+          if (product.enabled) {
+            prompt += `- ${product.name}: $${product.listPrice}/seat/year\n`;
+          }
+        });
+      }
+      if (products.jobSlots?.standard?.enabled) {
+        prompt += `- ${products.jobSlots.standard.name}: $${products.jobSlots.standard.listPrice}/year\n`;
+      }
+      if (products.careerPage?.standard?.enabled) {
+        prompt += `- ${products.careerPage.standard.name}: $${products.careerPage.standard.listPrice}/year\n`;
+      }
+
+      prompt += '\n**Learning Solutions:**\n';
+      if (products.learning?.standard?.enabled) {
+        prompt += `- ${products.learning.standard.name}: $${products.learning.standard.listPrice}/user/year (min ${products.learning.standard.minUsers || 100} users)\n`;
+      }
+    }
+
+    // Volume discounts
+    if (volumeDiscounts) {
+      prompt += '\n### Volume Discounts:\n';
+      if (volumeDiscounts.salesNavigator) {
+        prompt += '**Sales Navigator:**\n';
+        volumeDiscounts.salesNavigator.forEach(t => {
+          if (t.discount > 0) {
+            prompt += `- ${t.min}-${t.max >= 999999 ? '+' : t.max} seats: ${t.discount}%\n`;
+          }
+        });
+      }
+      if (volumeDiscounts.recruiter) {
+        prompt += '\n**Recruiter:**\n';
+        volumeDiscounts.recruiter.forEach(t => {
+          if (t.discount > 0) {
+            prompt += `- ${t.min}-${t.max >= 999999 ? '+' : t.max} seats: ${t.discount}%\n`;
+          }
+        });
+      }
+      if (volumeDiscounts.learning) {
+        prompt += '\n**LinkedIn Learning:**\n';
+        volumeDiscounts.learning.forEach(t => {
+          if (t.discount > 0) {
+            prompt += `- ${t.min}-${t.max >= 999999 ? '+' : t.max} users: ${t.discount}%\n`;
+          }
+        });
+      }
+    }
+
+    // Term discounts
+    if (termDiscounts) {
+      prompt += '\n### Multi-Year Term Discounts:\n';
+      Object.entries(termDiscounts).forEach(([years, discount]) => {
+        prompt += `- ${years}-year term: ${discount}%\n`;
+      });
+    }
+
+    // Bundle discounts
+    if (bundleDiscounts) {
+      prompt += '\n### Bundle Discounts (multiple product lines):\n';
+      Object.entries(bundleDiscounts).forEach(([count, discount]) => {
+        if (discount > 0) {
+          prompt += `- ${count} products: ${discount}%\n`;
+        }
+      });
+    }
+
+    // Approval thresholds
+    if (approvalThresholds) {
+      prompt += '\n### Approval Thresholds (by discount level):\n';
+      if (approvalThresholds.discount) {
+        approvalThresholds.discount.forEach(t => {
+          prompt += `- Up to ${t.maxDiscount}%: ${t.approver} (${t.sla})\n`;
+        });
+      }
+
+      prompt += '\n### Approval Thresholds (by TCV):\n';
+      if (approvalThresholds.tcv) {
+        approvalThresholds.tcv.forEach(t => {
+          const maxStr = t.maxTCV >= 999999999 ? '∞' : `$${t.maxTCV.toLocaleString()}`;
+          prompt += `- Up to ${maxStr}: ${t.approver}\n`;
+        });
+      }
+    }
+  }
+
+  if (settings?.policyText && settings.policyText.trim()) {
+    prompt += '\n\n## POLICY GUIDELINES\n';
+    prompt += 'The following policy guidelines have been configured by the deal desk administrator. You MUST follow these guidelines when structuring deals. If a deal conflicts with any policy below, flag the conflict and explain which policy applies.\n\n';
+    prompt += settings.policyText.trim();
+  }
+
+  return prompt;
+};
+
+export const sendMessage = async (messages, settings, onChunk, { signal } = {}) => {
+  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('API key not configured. Please add VITE_ANTHROPIC_API_KEY to your .env file.');
+  }
+
+  const systemPrompt = buildSystemPrompt(settings);
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5-20250929',
+      max_tokens: 2000,
+      system: systemPrompt,
+      messages: messages,
+      stream: true
+    }),
+    signal
+  });
+
+  if (!response.ok) {
+    let message = `API error: ${response.status}`;
+    try {
+      const error = await response.json();
+      message = error.error?.message || message;
+    } catch {}
+    throw new Error(message);
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let fullText = '';
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop(); // keep incomplete last line
+
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        const data = line.slice(6);
+        if (data === '[DONE]') continue;
+
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
+            fullText += parsed.delta.text;
+            if (onChunk) {
+              onChunk(parsed.delta.text, fullText);
+            }
+          }
+        } catch (e) {
+          // Skip non-JSON lines
+        }
+      }
+    }
+  }
+
+  return fullText;
+};
+
+export const extractDealUpdate = (text) => {
+  const jsonMatch = text.match(/```json:deal_update\s*([\s\S]*?)\s*```/i);
+  if (jsonMatch) {
+    try {
+      return JSON.parse(jsonMatch[1]);
+    } catch (e) {
+      console.error('Failed to parse deal update JSON:', e);
+    }
+  }
+  return null;
+};
+
+export const cleanResponseText = (text) => {
+  // Remove the JSON block from displayed text
+  return text.replace(/```json:deal_update\s*[\s\S]*?\s*```/gi, '').trim();
+};
