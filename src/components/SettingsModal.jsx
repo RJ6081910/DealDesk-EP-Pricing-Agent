@@ -84,7 +84,7 @@ const SettingsModal = ({ isOpen, onClose, settings, onUpdateSettings, onResetSet
         </div>
 
         {/* Tabs */}
-        <div className="flex overflow-x-auto scrollbar-hide border-b border-gray-200 px-3 sm:px-5">
+        <div className="flex flex-wrap border-b border-gray-200 px-3 sm:px-5">
           {tabs.map(tab => (
             <button
               key={tab.id}
